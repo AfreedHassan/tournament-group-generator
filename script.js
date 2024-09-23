@@ -9,6 +9,7 @@ function shuffle(array) {
 function generateGroups() {
   let sport = document.getElementById('sport').value
   let teams = document.getElementById('teams').value.split(',').map(team => team.trim());
+  let separateTeams = document.getElementById('separateTeams').value.split(',').map(team => team.trim());
   let numGroups = parseInt(document.getElementById('numGroups').value);
   let teamsPerGroup = parseInt(document.getElementById('teamsPerGroup').value);
 
@@ -24,12 +25,30 @@ function generateGroups() {
     return;
   }
 
-  // Shuffle teams for random distribution
+  // Ensure that the separate teams can be placed in different groups
+  if (separateTeams.length > numGroups) {
+    alert('There are more teams to be separated than available groups.');
+    return;
+  }
+
+
+  // Filter the separate teams from the main list
+  teams = teams.filter(team => !separateTeams.includes(team));
+
+  // Shuffle remaining teams for random distribution
   teams = shuffle(teams);
 
   let groups = [];
   for (let i = 0; i < numGroups; i++) {
     groups.push([]);
+  }
+
+  // Place separate teams in different groups
+  console.log(separateTeams)
+  if (separateTeams.length > 1) {
+    separateTeams.forEach((team, index) => {
+        groups[index].push(team);
+    });
   }
 
   // Randomly assign teams to groups while not exceeding teamsPerGroup
